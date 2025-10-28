@@ -94,6 +94,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <scalatestMavenPluginVersion>2.2.0</scalatestMavenPluginVersion>
+        <naked-local-fs-version>0.1.0</naked-local-fs-version>
 
         <scalacArg1></scalacArg1>
         <scalacArg2></scalacArg2>
@@ -124,6 +125,13 @@
     </distributionManagement>
 
     <dependencies>
+
+        <dependency>
+            <groupId>com.globalmentor</groupId>
+            <artifactId>hadoop-bare-naked-local-fs</artifactId>
+            <version>${naked-local-fs-version}</version>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.scala-lang</groupId>
