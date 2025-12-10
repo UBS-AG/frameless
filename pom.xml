@@ -57,7 +57,7 @@
     </modules>
 
     <properties>
-        <revision>2.0.0-agEnc-SNAPSHOT</revision>
+        <revision>2.0.0-agEnc-baseline</revision>
 
         <mavenProjectInfoReportsPluginVersion>3.4.5</mavenProjectInfoReportsPluginVersion>
         <maven.compiler.source>1.8</maven.compiler.source>
