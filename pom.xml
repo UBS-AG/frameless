@@ -88,7 +88,7 @@
         <scalacheckEffect>1.0.4</scalacheckEffect>
         <refinedVersion>0.11.1</refinedVersion>
         <nakedFSVersion>0.1.0</nakedFSVersion>
-        <shimVersion>0.3.0-baseline2-SNAPSHOT</shimVersion>
+        <shimVersion>0.3.0-baseline2</shimVersion>
 
         <!-- needed for scoverage -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
