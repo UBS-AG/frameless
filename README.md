@@ -2,7 +2,11 @@
 
 A wrapped and published fork of the excellent [frameless](https://github.com/typelevel/frameless) library.
 
-Version 1.x represents a shift towards AgnosticEncoders and support for Spark Connect as well as Spark Classic using the unified API from Spark 4.  As such it makes a clean break, only supporting 4.x currently.
+Version 1.x builds provides ExpressionEncoder support for various runtimes.
+
+Version 2.0.0 uses AgnosticEncoders and support for Spark Connect as well as Spark Classic using the unified API from Spark 4. 
+As such it makes a clean break, only supporting 4.x currently.  An important issue is that only TypedEncoders are full supported,
+TypedDataset does not work in a connect setup. 
 
 ## Why?
 
