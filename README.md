@@ -2,7 +2,11 @@
 
 A wrapped and published fork of the excellent [frameless](https://github.com/typelevel/frameless) library.
 
-Version 1.x represents a shift towards AgnosticEncoders and support for Spark Connect as well as Spark Classic using the unified API from Spark 4.  As such it makes a clean break, only supporting 4.x currently.
+Version 1.x builds provides ExpressionEncoder support for various runtimes.
+
+Version 2.0.0 uses AgnosticEncoders and support for Spark Connect as well as Spark Classic using the unified API from Spark 4. 
+As such it makes a clean break, only supporting 4.x currently.  An important issue is that only TypedEncoders are full supported,
+TypedDataset does not work in a connect setup. 
 
 ## Why?
 
@@ -48,12 +52,69 @@ com.sparkutils.frameless starts off from the 0.16 release of frameless proper an
 Version 1.x starts a fresh with Spark 4 and 2.13 support only maintaining support for Catalyst expression based TypedEncoders and will be the last release supporting them.  
 Version 2.x moves TypedEncoders to use AgnosticEncoders and Codecs internally. 
 
-| Version | Based On | Released         | Extras                                                                                                                                                                                                                                                                                                                                             |
-|---------|----------|------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 0.17.0  | 0.16.0   | 8th April 24     | [#800 - shim usage](https://github.com/typelevel/frameless/pull/800),  [#805 - correct Seq/Set encoding](https://github.com/typelevel/frameless/pull/805) and [#806 - correct eval implementation for UDF](https://github.com/typelevel/frameless/pull/806).                                                                                       |
-| 1.0.0   | 0.17.0   | 18th February 25 | [#800 - shim usage](https://github.com/typelevel/frameless/pull/800),  [#805 - correct Seq/Set encoding](https://github.com/typelevel/frameless/pull/805), [#806 - correct eval implementation for UDF](https://github.com/typelevel/frameless/pull/806) and [#701 - Spark 4 AgnosticEncoders](https://github.com/typelevel/frameless/issues/701). |
+| Version | Based On | Released         | Extras                                                                                                                                                                                                                                                                                                                                               |
+|---------|----------|------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 0.17.0  | 0.16.0   | 8th April 24     | [#800 - shim usage](https://github.com/typelevel/frameless/pull/800),  [#805 - correct Seq/Set encoding](https://github.com/typelevel/frameless/pull/805) and [#806 - correct eval implementation for UDF](https://github.com/typelevel/frameless/pull/806).                                                                                         |
+| 1.0.0   | 0.17.0   | 18th February 25 | [#800 - shim usage](https://github.com/typelevel/frameless/pull/800),  [#805 - correct Seq/Set encoding](https://github.com/typelevel/frameless/pull/805), [#806 - correct eval implementation for UDF](https://github.com/typelevel/frameless/pull/806) and [#701 - Spark 4 AgnosticEncoders](https://github.com/typelevel/frameless/issues/701).   |
+| 2.0.0   | 0.17.0   | 13th August 26   | per version 1.0.0, Spark4 compatible AgnosticEncoders only, which are tested with Connect, typed Datasets however do not work with Connect, nor can UDFs etc.                                                                                                                                                                                        |
 
 ## How to use
+
+0.2.0 necessarily supports Spark 4 only and is unlikely to have functionality back ported to frameless, although the APIs a still compile time consistent.
+The single artifact, for encoding, is known to work on 4.0, 4.1 and 4.2 as well as Databricks 17.3, 18.3 and 19 runtimes (when paired with the correct shim_runtime - see Quality test runs for exact versions).  
+
+```xml
+<pom>
+    
+<properties>
+    
+    <shimRuntime>18.3.dbr</shimRuntime>
+    <shimRuntimeVersion>0.3.0</shimRuntimeVersion>
+
+    <!-- sparkutils frameless -->
+
+    <framelessVersion>2.0.0</framelessVersion>
+    <framelessCompatVersion>4.0</framelessCompatVersion>
+
+</properties>   
+    
+<dependencies>
+    <!-- shim runtime of your choosing, as long as its 0.3.x -->
+    <dependency>
+        <groupId>com.sparkutils</groupId>
+        <artifactId>shim_runtime_${shimRuntime}_${sparkCompatVersion}_${scalaCompatVersion}</artifactId>
+        <version>${shimRuntimeVersion}</version>
+    </dependency>
+
+    <dependency>
+        <groupId>com.sparkutils</groupId>
+        <artifactId>frameless-core_${framelessCompatVersion}_${scalaCompatVersion}</artifactId>
+        <version>${framelessVersion}</version>
+        <exclusions>
+            <!-- exclude the shim -->
+            <exclusion>
+                <groupId>com.sparkutils</groupId>
+                <artifactId>*</artifactId>
+            </exclusion>
+        </exclusions>
+    </dependency>
+    <dependency>
+        <groupId>com.sparkutils</groupId>
+        <artifactId>frameless-dataset_${framelessCompatVersion}_${scalaCompatVersion}</artifactId>
+        <version>${framelessVersion}</version>
+        <exclusions>
+            <!-- exclude the shim -->
+            <exclusion>
+                <groupId>com.sparkutils</groupId>
+                <artifactId>*</artifactId>
+            </exclusion>
+        </exclusions>
+    </dependency>
+</dependencies>
+</pom>
+```
+
+### 0.1.0 against earlier Spark versions with the real frameless
 
 In order to depend upon both typelevel frameless and com.sparkutils.frameless the following scheme is needed (use the profiles to swap between version see [testless' pom](https://github.com/sparkutils/testless/blob/main/pom.xml) for a thorough example):
 
